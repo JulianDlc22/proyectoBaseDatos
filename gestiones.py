@@ -1,8 +1,6 @@
 
-from clases_constructor import Producto , Categoria
-from Menu_Usuarios import Menu, IngresoUsuario
-from repositorios import  RepositorioProductosTxt, RepositorioCategoriasTxt
-#clase ingreso
+from repositorios import RepositorioCategoriasTxt, RepositorioProductosTxt, RepositorioEmpleadosTxt
+from clases_constructor import Producto, Categoria, Empleados
 
 class GestionProductos:
     def __init__(self, repositorio_productos: RepositorioProductosTxt , repositorio_categorias : "RepositorioCategorias"):
@@ -88,9 +86,9 @@ class GestionProductos:
 
 class GestionCategorias:
 
-    def __init__(self, repositorio: RepositorioCategoriasTxt):
-        self.repositorio = repositorio
-        self.categorias = self.repositorio.categorias
+    def __init__(self, repositorio_categorias: RepositorioCategoriasTxt):
+        self.repositorio_categorias = repositorio_categorias
+        self.categorias = self.repositorio_categorias.categorias
 
     def agregar_categorias(self):
         print("\n--Ingreso Categorias--")
@@ -125,59 +123,47 @@ class GestionCategorias:
                 print("error- opcion no valida, se terminara el ingreso")
                 break
 
+class GestionesEmpleados:
 
+    def __init__(self, repositorio_empleados: RepositorioEmpleadosTxt):
+        self.repositorio_empleados = repositorio_empleados
+        self.empleados = self.repositorio_empleados.empleados
 
-#clase menu#
+    def agregar_empleados(self):
+        print("\n--Ingreso Empleados--")
+        i = 0
+        while True:
 
-#programa Principal
-admin = IngresoUsuario()
-repositorio_productos = RepositorioProductosTxt()
-repositorio_categorias = RepositorioCategoriasTxt()
-gestiones_productos = GestionProductos(repositorio_productos,repositorio_categorias)
-gestiones_categorias = GestionCategorias(repositorio_categorias)
-menu = Menu(gestiones_productos, gestiones_categorias)
+            print(f"\nEmpleado No.{i + 1}")
 
-
-while True:
-    print("1. Administrador")
-    print("2. Vendedor")
-    print("3. Salir")
-
-    opcion = input("Ingrese una opcion: ")
-
-    try:
-        opcion = int(opcion)
-        match opcion:
-            case 1:
-                admin.validacion_admin()
-                menu.opcionesMenu["1"].ejecutar()
-            case 2:
-                pass
-            case 3:
-                print("Saliendo...")
+            while True:
+                id_empleado = input("Codigo de Empleado: ")
+                if id_empleado in self.empleados:
+                    input("Codigo ingresado ya en existencia, presione para volver a Ingresarlo")
+                    continue
                 break
-            case _:
-                print("ERROR- opcion fuera del rango permitido")
-                input("Presione enter para continuar...")
 
+            nombre = input("Nombre del Empleado: ").lower()
+            telefono = input("Telefono del Empleado: ")
+            direccion = input("Direccion del Empleado: ")
+            correo = input("Correo del Empleado: ")
 
-    except ValueError:
-        print("Error- esta Ingresando una opcion invalida")
-        input("Presione enter para continuar...")
+            empleado = Empleados(id_empleado, nombre, telefono, direccion, correo)
+            self.empleados[id_empleado] = empleado
 
+            print(" ")
+            self.repositorio.guardar_categorias()
+            print(f"Producto Guardado con codigo {id_empleado} agregado y guardado correctamente.")
+            confirmacion = input(
+                "Desea Ingresar otro producto? presione S para continuar o presione N para salir: ").lower()
 
-
-
-
-
-
-
-
-
-
-
-
-
+            if confirmacion == "s":
+                continue
+            elif confirmacion == "n":
+                break
+            else:
+                print("error- opcion no valida, se terminara el ingreso")
+                break
 
 
 
